@@ -4,8 +4,6 @@ import burp.api.montoya.MontoyaApi;
 import com.coreyd97.BurpExtenderUtilities.nameManager.NameManager;
 import com.coreyd97.BurpExtenderUtilities.TypeAdapter.AtomicIntegerTypeAdapter;
 import com.coreyd97.BurpExtenderUtilities.TypeAdapter.ByteArrayToBase64TypeAdapter;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -17,12 +15,14 @@ public class Preferences {
 
     public enum Visibility {GLOBAL, PROJECT, VOLATILE}
 
-    @Getter
-    @Setter
     private ILogProvider logProvider;
 
-    @Getter
+    public ILogProvider getLogProvider() { return logProvider; }
+    public void setLogProvider(ILogProvider logProvider) { this.logProvider = logProvider; }
+
     private final IGsonProvider gsonProvider;
+
+    public IGsonProvider getGsonProvider() { return gsonProvider; }
     private final MontoyaApi montoya;
     private final HashMap<String, Object> preferences;
     private final HashMap<String, Object> preferenceDefaults;

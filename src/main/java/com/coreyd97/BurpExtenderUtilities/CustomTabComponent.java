@@ -13,6 +13,7 @@ public class CustomTabComponent extends JPanel {
     private JTextField editableField;
     private Border editableFieldBorder;
     private JButton removeTabButton;
+    private JLabel dotIndicator;
 
     private int index;
     private boolean showIndex;
@@ -25,6 +26,7 @@ public class CustomTabComponent extends JPanel {
 
     private String originalTitle;
     private boolean wasEdited;
+    private boolean isDragging = false;
 
     public CustomTabComponent(String title){
         this(-1, title, false, false, null, false, null);
@@ -45,7 +47,7 @@ public class CustomTabComponent extends JPanel {
         this.wasEdited = false;
 
         if(this.showIndex){
-            indexLabel = new JLabel(index + ": ");
+            indexLabel = new JLabel("Step " + index + ": ");
             this.add(indexLabel, BorderLayout.WEST);
         }
 
@@ -87,6 +89,10 @@ public class CustomTabComponent extends JPanel {
             });
         }
 
+        dotIndicator = new JLabel(" ●");
+        dotIndicator.setForeground(new Color(0xE5, 0x6B, 0x22));
+        dotIndicator.setVisible(false);
+
         if(this.isRemovable) {
             removeTabButton = new JButton("x");
             removeTabButton.setFont(removeTabButton.getFont().deriveFont(10F));
@@ -97,8 +103,14 @@ public class CustomTabComponent extends JPanel {
             removeTabButton.setPreferredSize(new Dimension(20,20));
             removeTabButton.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
             removeTabButton.setBackground(new Color(0,0,0,0));
-//            add(Box.createHorizontalStrut(5));
-            add(removeTabButton, BorderLayout.EAST);
+
+            JPanel rightPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
+            rightPanel.setOpaque(false);
+            rightPanel.add(dotIndicator);
+            rightPanel.add(removeTabButton);
+            add(rightPanel, BorderLayout.EAST);
+        } else {
+            add(dotIndicator, BorderLayout.EAST);
         }
 
         revalidate();
@@ -148,6 +160,7 @@ public class CustomTabComponent extends JPanel {
         }
 
         private void handleEvent(MouseEvent mouseEvent){
+            if (isDragging) return;
             if(SwingUtilities.isLeftMouseButton(mouseEvent)) {
                 if (mouseEvent.getClickCount() > 1) {
                     editLabel();
@@ -165,7 +178,7 @@ public class CustomTabComponent extends JPanel {
     public void setIndex(int index) {
         this.index = index;
         if(this.showIndex){
-            this.indexLabel.setText(index + ": ");
+            this.indexLabel.setText("Step " + index + ": ");
         }
     }
 
@@ -182,5 +195,25 @@ public class CustomTabComponent extends JPanel {
 
     public boolean wasEditedByUser() {
         return wasEdited;
+    }
+
+    public void setDragging(boolean dragging) {
+        this.isDragging = dragging;
+    }
+
+    public void showDot() {
+        dotIndicator.setVisible(true);
+        revalidate();
+        repaint();
+    }
+
+    public void hideDot() {
+        dotIndicator.setVisible(false);
+        revalidate();
+        repaint();
+    }
+
+    public boolean isDotVisible() {
+        return dotIndicator.isVisible();
     }
 }

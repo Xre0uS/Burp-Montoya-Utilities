@@ -1,10 +1,12 @@
 plugins {
-    id 'java'
-    id "io.freefair.lombok" version "6.5.1"
+    id 'java-library'
 }
 
-sourceCompatibility = JavaVersion.VERSION_17
-targetCompatibility = JavaVersion.VERSION_17
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(25)
+    }
+}
 
 group = 'com.github.CoreyD97'
 
@@ -13,43 +15,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'net.portswigger.burp.extensions:montoya-api:2023.3'
-    implementation "com.google.code.gson:gson:2.10"
-
-    testRuntimeOnly files("${System.properties['user.home']}/BurpSuitePro/burpsuite_pro.jar")
+    compileOnly 'net.portswigger.burp.extensions:montoya-api:2026.2'
+    api 'com.google.code.gson:gson:2.11.0'
 }
 
-jar{
-    baseName = project.name
-    from {
-        (configurations.compileClasspath).collect { it.isDirectory() ? it : zipTree(it) }
-    }{
-        exclude "META-INF/*.SF"
-        exclude "META-INF/*.DSA"
-        exclude "META-INF/*.RSA"
-    }
-}
-
-task testJar(type: Jar) {
-    baseName = project.name + "-TEST"
-    dependsOn testClasses
-    sourceSets.main.output.each {
-        from it
-    }
-    sourceSets.test.output.each {
-        from it
-    }
-
-    sourceSets.test.runtimeClasspath.each { File f ->
-        if (f.name.endsWith('.jar')) {
-            from zipTree(f)
-        } else {
-            from f
-        }
-    }
-
-}
-
-tasks.withType(Jar) {
-    destinationDir = file("$rootDir/releases")
-}
