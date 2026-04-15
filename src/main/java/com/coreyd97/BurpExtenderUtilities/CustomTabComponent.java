@@ -123,10 +123,13 @@ public class CustomTabComponent extends JPanel {
         originalTitle = titleLabel.getText();
         editableField.setText(originalTitle);
         editableField.setBorder(editableFieldBorder);
-        editableField.requestFocus();
         this.add(editableField, BorderLayout.CENTER);
         this.revalidate();
         this.repaint();
+        SwingUtilities.invokeLater(() -> {
+            editableField.requestFocusInWindow();
+            editableField.selectAll();
+        });
     }
 
     private void endEditLabel(){
